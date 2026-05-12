@@ -4,8 +4,8 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
-import pe.com.relari.error.category.ErrorCategory;
-import pe.com.relari.error.model.ErrorDetail;
+import pe.com.relari.error.category.ErrorCatalog;
+import pe.com.relari.error.model.ErrorCategory;
 import pe.com.relari.support.generic.GenericMap;
 
 /**
@@ -20,6 +20,18 @@ import pe.com.relari.support.generic.GenericMap;
 @ConfigurationProperties(prefix = "application.errors")
 public class ErrorProperties {
 
-    private GenericMap<ErrorCategory, ErrorDetail> categories;
+    private String code;
+    private GenericMap<String, ErrorCategory> categories;
+
+    public ErrorCategory getCategory(ErrorCatalog category) {
+        if (categories == null) {
+            return null;
+        }
+        return categories.get(category.name());
+    }
+
+    public String buildErrorCode(String code) {
+        return this.code.concat(code);
+    }
 
 }
