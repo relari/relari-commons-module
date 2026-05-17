@@ -1,10 +1,10 @@
-package pe.com.relari.error.category;
+package pe.com.relari.library.error.category;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
- * enum: ErrorCategory.
+ * <b>Enum:</b> ErrorCategory.<br>
  *
  * @author Relari
  */

@@ -1,17 +1,17 @@
-package pe.com.relari.error.config;
+package pe.com.relari.library.error.config;
 
+import java.util.Map;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
-import pe.com.relari.error.category.ErrorCatalog;
-import pe.com.relari.error.model.ErrorCategory;
-import pe.com.relari.support.generic.GenericMap;
+import pe.com.relari.library.error.category.ErrorCatalog;
+import pe.com.relari.library.error.model.ErrorCategory;
 
 /**
- * <b>Class:</b> ApplicationProperties.</br>
- * @author Renzo Lavado Rivas.
- * @version 1.0.0
+ * <b>Class:</b> ApplicationProperties.<br>
+ *
+ * @author Relari.
  */
 
 @Data
@@ -21,7 +21,7 @@ import pe.com.relari.support.generic.GenericMap;
 public class ErrorProperties {
 
     private String code;
-    private GenericMap<String, ErrorCategory> categories;
+    private Map<String, ErrorCategory> categories;
 
     public ErrorCategory getCategory(ErrorCatalog category) {
         if (categories == null) {

@@ -1,11 +1,11 @@
-package pe.com.relari.error.exception;
+package pe.com.relari.library.error.exception;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
-import pe.com.relari.error.category.ErrorCatalog;
+import pe.com.relari.library.error.category.ErrorCatalog;
 
 /**
- * Class: ApiException.
+ * <b>Class:</b> ApiException.<br>
  *
  * @author Relari
  */

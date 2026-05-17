@@ -1,12 +1,10 @@
-package pe.com.relari.error.model;
+package pe.com.relari.library.error.model;
 
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Class: ErrorCategory.
- * Define los nombres de todas las categorías de error como constantes.
- * Sincroniza automáticamente con application.yml
+ * <b>Class:</b> ErrorCategory.<br>
  *
  * @author Relari
  */

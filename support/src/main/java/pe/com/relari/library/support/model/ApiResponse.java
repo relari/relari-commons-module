@@ -1,4 +1,4 @@
-package pe.com.relari.support.model;
+package pe.com.relari.library.support.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * @author Relari
  */
 
-public record DefaultResponse<T> (
+public record ApiResponse<T> (
 		@Schema(
 				description = "Codigo HTTP.",
 				name = "code",
