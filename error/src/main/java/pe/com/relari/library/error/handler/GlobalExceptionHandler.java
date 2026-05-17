@@ -1,4 +1,4 @@
-package pe.com.relari.error.handler;
+package pe.com.relari.library.error.handler;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
@@ -13,16 +13,15 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import pe.com.relari.error.config.ErrorProperties;
-import pe.com.relari.error.exception.ApiException;
-import pe.com.relari.error.model.ErrorDetail;
-import pe.com.relari.error.model.ErrorResponse;
+import pe.com.relari.library.error.config.ErrorProperties;
+import pe.com.relari.library.error.exception.ApiException;
+import pe.com.relari.library.error.model.ErrorResponse;
+import pe.com.relari.library.error.model.ValidationError;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * class: GlobalExceptionHandler.
+ * <b>Class:</b> GlobalExceptionHandler.<br>
  *
  * @author Relari
  */
@@ -36,12 +35,25 @@ public class GlobalExceptionHandler {
   @Value("${spring.application.name}")
   private String applicationName;
 
+  @Value("${spring.profiles.active:prod}")
+  private String activeProfile;
+
   private final ErrorProperties errorProperties;
+
+  /**
+   * Verifica si está en ambiente de desarrollo para incluir stack traces.
+   *
+   * @return true si debe incluir stack trace (dev, test), false si es producción
+   */
+  private boolean shouldIncludeStackTrace() {
+    return activeProfile.contains("dev") || activeProfile.contains("test") || activeProfile.contains("local");
+  }
 
   /**
    * Maneja las excepciones personalizadas de negocio (ApiException).
    * Se lanza cuando ocurre un error controlado en la lógica de negocio,
    * mapeado en el catálogo de errores.
+   * El stack trace se incluye solo en ambiente de desarrollo.
    *
    * @param apiException La excepción de negocio capturada
    * @param request  La solicitud HTTP actual
@@ -51,26 +63,21 @@ public class GlobalExceptionHandler {
   public ResponseEntity<ErrorResponse> apiException(
       ApiException apiException, HttpServletRequest request) {
 
-    var errorDetail = errorProperties.getCategories().getValue(apiException.getCatalog());
+    var errorCategory = errorProperties.getCategory(apiException.getCatalog());
 
-    log.error("[ApiException]: {}", errorDetail.description(), apiException);
+    log.error("[ApiException] {} - Cause: {}", apiException.getCatalog(), apiException.getMessage(), apiException);
 
-    var error = new ErrorResponse();
-    error.setCode(apiException.getCatalog().name());
-    error.setStatus(apiException.getCatalog().getStatus().value());
-    error.setDescription(errorDetail.description());
-    error.setComponent(applicationName);
-    error.setInstance(request.getRequestURI());
-    error.setTimestamp(LocalDateTime.now().toString());
+    var error = new ErrorResponse(errorCategory, apiException.getCause(), shouldIncludeStackTrace());
 
-    return ResponseEntity.status(apiException.getCatalog().getStatus()).body(error);
+    return ResponseEntity.status(error.getStatus()).body(error);
   }
 
   /**
    * Maneja cualquier excepción no controlada (Exception).
    * Se lanza ante errores inesperados del sistema (NullPointerException, fallos
    * de BD no controlados, etc.).
-   * Actúa como un "catch-all" para evitar que el cliente reciba un stacktrace.
+   * Actúa como un "catch-all" para evitar que el cliente reciba un stacktrace completo.
+   * En desarrollo, incluye el stack trace para debugging.
    *
    * @param exception La excepción inesperada
    * @param request   La solicitud HTTP actual
@@ -83,14 +90,12 @@ public class GlobalExceptionHandler {
     log.error("Unexpected error occurred", exception);
 
     var status = HttpStatus.INTERNAL_SERVER_ERROR;
+    var error = new ErrorResponse(status.value(), exception.getMessage());
 
-    var error = new ErrorResponse();
-    error.setStatus(status.value());
-    error.setCode("API-" + status.value());
-    error.setDescription("Error interno del servidor.");
-    error.setComponent(applicationName);
-    error.setInstance(request.getRequestURI());
-    error.setTimestamp(LocalDateTime.now().toString());
+    // Incluir stack trace solo en desarrollo
+    if (shouldIncludeStackTrace()) {
+      error.setThrowable(ErrorResponse.getStackTraceStatic(exception));
+    }
 
     return ResponseEntity.status(status).body(error);
   }
@@ -109,24 +114,18 @@ public class GlobalExceptionHandler {
   public ResponseEntity<ErrorResponse> methodArgumentNotValidException(
       MethodArgumentNotValidException exception, HttpServletRequest request) {
 
-    log.error("MethodArgumentNotValidException occurred", exception);
+    log.error("[MethodArgumentNotValidException] occurred", exception);
 
     var status = HttpStatus.BAD_REQUEST;
 
-    List<ErrorDetail> errorDetails = exception.getBindingResult().getFieldErrors().stream()
-        .map(fieldError -> new ErrorDetail(
+    List<ValidationError> errorDetails = exception.getBindingResult().getFieldErrors().stream()
+        .map(fieldError -> new ValidationError(
             fieldError.getField(),
             fieldError.getDefaultMessage()))
         .toList();
 
-    var error = new ErrorResponse();
-    error.setStatus(status.value());
-    error.setCode("API-" + status.value());
-    error.setDescription("Error de validación de parámetros.");
-    error.setComponent(applicationName);
-    error.setInstance(request.getRequestURI());
-    error.setTimestamp(LocalDateTime.now().toString());
-    error.setErrorDetails(errorDetails);
+    var error = new ErrorResponse(status.value(), exception.getMessage());
+    error.setDetails(errorDetails);
 
     return ResponseEntity.status(status).body(error);
   }
@@ -145,17 +144,11 @@ public class GlobalExceptionHandler {
   public ResponseEntity<ErrorResponse> missingServletRequestParameterException(
       MissingServletRequestParameterException exception, HttpServletRequest request) {
 
-    log.error("MissingServletRequestParameterException occurred", exception);
+    log.error("[MissingServletRequestParameterException] occurred", exception);
 
     var status = HttpStatus.BAD_REQUEST;
 
-    var error = new ErrorResponse();
-    error.setStatus(status.value());
-    error.setCode("API-" + status.value());
-    error.setDescription("Parámetro requerido faltante: " + exception.getParameterName());
-    error.setComponent(applicationName);
-    error.setInstance(request.getRequestURI());
-    error.setTimestamp(LocalDateTime.now().toString());
+    var error = new ErrorResponse(status.value(), exception.getMessage());
 
     return ResponseEntity.status(status).body(error);
   }
@@ -176,17 +169,11 @@ public class GlobalExceptionHandler {
   public ResponseEntity<ErrorResponse> methodArgumentTypeMismatchException(
       MethodArgumentTypeMismatchException exception, HttpServletRequest request) {
 
-    log.error("MethodArgumentTypeMismatchException occurred", exception);
+    log.error("[MethodArgumentTypeMismatchException] occurred", exception);
 
     var status = HttpStatus.BAD_REQUEST;
 
-    var error = new ErrorResponse();
-    error.setStatus(status.value());
-    error.setCode("API-" + status.value());
-    error.setDescription("Tipo de argumento incorrecto para el parámetro: " + exception.getName());
-    error.setComponent(applicationName);
-    error.setInstance(request.getRequestURI());
-    error.setTimestamp(LocalDateTime.now().toString());
+    var error = new ErrorResponse(status.value(), exception.getMessage());
 
     return ResponseEntity.status(status).body(error);
   }
@@ -205,17 +192,11 @@ public class GlobalExceptionHandler {
   public ResponseEntity<ErrorResponse> httpMessageNotReadableException(
       HttpMessageNotReadableException exception, HttpServletRequest request) {
 
-    log.error("HttpMessageNotReadableException occurred", exception);
+    log.error("[HttpMessageNotReadableException] occurred", exception);
 
     var status = HttpStatus.BAD_REQUEST;
 
-    var error = new ErrorResponse();
-    error.setStatus(status.value());
-    error.setCode("API-" + status.value());
-    error.setDescription("Cuerpo de la solicitud mal formado o inválido.");
-    error.setComponent(applicationName);
-    error.setInstance(request.getRequestURI());
-    error.setTimestamp(LocalDateTime.now().toString());
+    var error = new ErrorResponse(status.value(), exception.getMessage());
 
     return ResponseEntity.status(status).body(error);
   }

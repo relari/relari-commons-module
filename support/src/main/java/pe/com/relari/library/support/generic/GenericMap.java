@@ -1,4 +1,4 @@
-package pe.com.relari.support.generic;
+package pe.com.relari.library.support.generic;
 
 import java.util.HashMap;
 

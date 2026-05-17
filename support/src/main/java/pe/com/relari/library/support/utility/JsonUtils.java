@@ -1,4 +1,4 @@
-package pe.com.relari.support.utility;
+package pe.com.relari.library.support.utility;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;

@@ -1,10 +1,9 @@
-package pe.com.relari.error.model;
+package pe.com.relari.library.error.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
- * record: ValidationErrorDetail.
- * Representa un error de validación de un campo específico.
+ * <b>Record:</b> ValidationErrorDetail.<br>
  *
  * @param field Nombre del campo validado
  * @param message Mensaje de validación
