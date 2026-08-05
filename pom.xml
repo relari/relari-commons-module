@@ -5,10 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>pe.com.relari.commons</groupId>
-    <artifactId>shared-commons</artifactId>
+    <artifactId>relari-commons-module</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>shared-commons</name>
+    <name>relari-commons-module</name>
     <modules>
         <module>commons-utils</module>
     </modules>
