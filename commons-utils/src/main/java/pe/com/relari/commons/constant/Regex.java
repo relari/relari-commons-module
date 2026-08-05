@@ -1,4 +1,4 @@
-package pe.com.relari.library.support.constant;
+package pe.com.relari.commons.constant;
 
 /**
  * <b>Class:</b> RegexConstant.<br/>

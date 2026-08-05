@@ -1,6 +1,6 @@
-package pe.com.relari.library.support.utility;
+package pe.com.relari.commons.utility;
 
-import pe.com.relari.library.support.constant.Constants;
+import pe.com.relari.commons.constant.Constants;
 
 import java.util.StringJoiner;
 

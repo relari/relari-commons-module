@@ -1,4 +1,4 @@
-package pe.com.relari.library.support.utility;
+package pe.com.relari.commons.utility;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
