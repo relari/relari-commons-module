@@ -1,4 +1,4 @@
-package pe.com.relari.commons.utility;
+package pe.com.relari.commons.util;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -7,14 +7,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 /**
- * <b>Class:</b> DateUtility.<br>
+ * <b>Class:</b> DateUtil.<br>
  *
  * @author Relari.
  */
 
-public class DateUtility {
+public class DateUtil {
 
-  private DateUtility() {}
+  private DateUtil() {}
 
   public static final String DATE_FORMAT = "dd/MM/yyyy";
   public static final String DATETIME_FORMAT = "dd/MM/yyyy HH:mm";

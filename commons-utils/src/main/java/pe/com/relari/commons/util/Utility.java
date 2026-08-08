@@ -1,4 +1,4 @@
-package pe.com.relari.commons.utility;
+package pe.com.relari.commons.util;
 
 import pe.com.relari.commons.constant.Constants;
 
