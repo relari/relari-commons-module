@@ -7,9 +7,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 /**
- * class: DateUtils
- * 
- * @author Relari
+ * <b>Class:</b> DateUtility.<br>
+ *
+ * @author Relari.
  */
 
 public class DateUtility {
