@@ -38,7 +38,10 @@ jobs:
         run: mvn clean package -DskipTests
 
       - name: Search JAR
-        run: cd ./commons.utils/target/*.jar
+        run: |
+          ls
+          cd ./commons.utils/target/
+          ls *.jar
 
 #      - name: Upload JAR Artifact
 #        uses: actions/upload-artifact@v4
