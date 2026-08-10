@@ -43,8 +43,8 @@ jobs:
           cd commons-utils/target/
           ls *.jar
 
-#      - name: Upload JAR Artifact
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: commons-utils-jar
-#          path: commons.utils/target/*.jar
+      - name: Upload JAR Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: commons-utils-jar
+          path: commons-utils/target/*.jar
