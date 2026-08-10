@@ -40,7 +40,7 @@ jobs:
       - name: Search JAR
         run: |
           ls
-          cd commons.utils/target/
+          cd commons-utils/target/
           ls *.jar
 
 #      - name: Upload JAR Artifact
