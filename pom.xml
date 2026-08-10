@@ -49,12 +49,12 @@
         <repository>
             <id>github</id>
             <name>GitHub Packages</name>
-            <url>https://maven.pkg.github.com/Relari/relari-commons-module</url>
+            <url>https://maven.pkg.github.com/relari/relari-commons-module</url>
         </repository>
         <snapshotRepository>
             <id>github</id>
             <name>GitHub Packages</name>
-            <url>https://maven.pkg.github.com/Relari/relari-commons-module</url>
+            <url>https://maven.pkg.github.com/relari/relari-commons-module</url>
         </snapshotRepository>
     </distributionManagement>
 

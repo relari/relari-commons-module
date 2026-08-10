@@ -25,6 +25,8 @@ jobs:
           # Esta línea configura el settings.xml automáticamente para GitHub Packages:
           server-id: github
           settings-path: ${{ github.workspace }}
+          server-username: ${{ github.actor }}
+          server-password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish to GitHub Packages
         run: mvn -s ${{ github.workspace }}/settings.xml clean deploy -DskipTests
