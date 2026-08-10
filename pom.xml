@@ -33,4 +33,29 @@
         </dependency>
     </dependencies>
 
+    <developers>
+        <developer>
+            <id>relari</id>
+            <name>Renzo Lavado</name>
+            <email>lavado.rivas.renzo@gmail.com</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <timezone>-5</timezone>
+        </developer>
+    </developers>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/relari/${project.artifactId}</url>
+        </repository>
+        <snapshotRepository>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/relari/${project.artifactId}</url>
+        </snapshotRepository>
+    </distributionManagement>
+
 </project>
