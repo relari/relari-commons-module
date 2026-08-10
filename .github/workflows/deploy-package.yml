@@ -29,5 +29,7 @@ jobs:
       - name: Publish to GitHub Packages
         run: mvn clean deploy -DskipTests
         env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
+          # Estas variables de entorno alimentan directamente al servidor 'github' del settings.xml
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          USERNAME: ${{ github.actor }}
+          PASSWORD: ${{ secrets.GITHUB_TOKEN }}
