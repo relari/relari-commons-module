@@ -3,6 +3,8 @@ name: Publish Maven Package
 on:
   push:
     branches: [ "main" ]
+  # Permitir trigger manual
+  workflow_dispatch:
 
 jobs:
   publish:
@@ -20,16 +22,13 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-          architecture: 'x64'
+#          architecture: 'x64'
           cache: 'maven'
-          # Esta línea configura el settings.xml automáticamente para GitHub Packages:
-          server-id: github
-          settings-path: ${{ github.workspace }}
-          server-username: ${{ github.actor }}
-          server-password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Publish to GitHub Packages
-        run: mvn -s ${{ github.workspace }}/settings.xml clean deploy -DskipTests
+#          # Esta línea configura el settings.xml automáticamente para GitHub Packages:
+#          server-id: github
+#          settings-path: ${{ github.workspace }}
+#          server-username: ${{ github.actor }}
+#          server-password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build with Maven
         run: mvn clean package -DskipTests
@@ -39,6 +38,12 @@ jobs:
           ls
           cd commons-utils/target/
           ls *.jar
+
+      - name: Publish to GitHub Packages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_ACTOR: ${{ github.actor }}
+        run: mvn deploy -DskipTests
 
       - name: Upload JAR Artifact
         uses: actions/upload-artifact@v4
