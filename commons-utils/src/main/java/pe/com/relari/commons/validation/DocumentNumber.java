@@ -34,7 +34,7 @@ public @interface DocumentNumber {
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
       if (value == null || value.isBlank()) {
-      return true;
+        return true;
       }
       return value.matches(REGEXP_DOCUMENT_NUMBER);
     }
